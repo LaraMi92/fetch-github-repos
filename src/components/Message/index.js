@@ -1,6 +1,6 @@
 // == Import npm
 import React from 'react';
-
+import PropTypes from 'prop-types';
 // == Import
 
 import './message.scss';
@@ -14,7 +14,10 @@ const Message = ({ resultNumber }) => (
 
 );
 
+Message.propTypes = {
+  resultNumber: PropTypes.number.isRequired,
+
+};
+
 // == Export
 export default Message;
-
-// NE PAS OUBLIER LES PROPTYPES APRES

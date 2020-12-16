@@ -1,6 +1,6 @@
 // == Import npm
 import React from 'react';
-
+import PropTypes from 'prop-types';
 // == Import
 
 import './searchbar.scss';
@@ -31,7 +31,10 @@ const SearchBar = ({ onFormSubmit, inputValue, onInputChange }) => (
   </form>
 );
 
+SearchBar.propTypes = {
+  inputValue: PropTypes.string.isRequired,
+  onInputChange: PropTypes.func.isRequired,
+  onFormSubmit: PropTypes.func.isRequired,
+};
 // == Export
 export default SearchBar;
-
-// NE PAS OUBLIER LES PROPTYPES APRES
