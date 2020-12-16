@@ -20,7 +20,7 @@ const App = () => {
   // pour la réception des données du formulaire : les repos
   const [results, setResults] = useState([]);
   // pour la réception des données du form : le nombre de résultats
-  const [nbResult, setNbResult] = useState(0);
+  const [nbResult, setNbResult] = useState('');
 
   // gérer la soumission d'envoi du form
   const submitForm = () => {
@@ -42,7 +42,8 @@ const App = () => {
         inputValue={inputChange}
         onFormSubmit={submitForm}
       />
-      <Message resultNumber={nbResult} />
+      {/** N'afficher le composant que si nbResult contient qqchose */}
+      {nbResult && <Message resultNumber={nbResult} />}
       <ReposResults results={results} />
     </div>
   );
