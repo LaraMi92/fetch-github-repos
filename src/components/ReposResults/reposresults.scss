@@ -1,0 +1,17 @@
+.results{
+  width:100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: baseline;
+  margin: auto;
+}
+
+.image {
+  align-self: center;
+}
+
+.ui.card{
+  width: 20%;
+  margin: 1rem;
+}

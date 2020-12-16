@@ -1,6 +1,8 @@
 // == Import npm
 import React from 'react';
 import PropTypes from 'prop-types';
+// import Semantic UI
+import { Card } from 'semantic-ui-react';
 // == Import
 
 import './reposresults.scss';
@@ -9,21 +11,18 @@ import './reposresults.scss';
 // pour le passer en props au composant
 
 const ReposResults = ({ results }) => (
-  <article>
+  <div className="results">
     {/** mapper ici sur le tableau de résultats */}
     {results.map((result) => (
-      <section key={result.id}>
-        <h2>
-          {result.name}
-        </h2>
-        <h3>{result.full_name}</h3>
-
-        <p>
-          {result.description}
-        </p>
-      </section>
+      <Card
+        key={result.id}
+        image={result.owner.avatar_url}
+        header={result.name}
+        meta={result.full_name}
+        description={result.description}
+      />
     ))}
-  </article>
+  </div>
 
 );
 

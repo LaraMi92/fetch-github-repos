@@ -14,12 +14,15 @@ import './searchbar.scss';
 const SearchBar = ({ onFormSubmit, inputValue, onInputChange }) => (
 
   // événement submit
-  <form onSubmit={(event) => {
-    event.preventDefault();
-    onFormSubmit();
-  }}
+  <form
+    className="form"
+    onSubmit={(event) => {
+      event.preventDefault();
+      onFormSubmit();
+    }}
   >
     <input
+      className="input"
       value={inputValue}
       // événement onChange pour màj l'état avec la saisie utilisateur
       onChange={(event) => {
