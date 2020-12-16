@@ -5,6 +5,9 @@ import React from 'react';
 
 import './reposresults.scss';
 
+// Ici il faudra récupérer le résultat de la fonction gérant l'appel à l'API
+// pour le passer en props au composant
+
 const ReposResults = ({
   title, category, description,
 }) => (
