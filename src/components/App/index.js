@@ -28,9 +28,25 @@ const App = () => {
 
     console.log(formSubmitted);
 
-    const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setResults(response.data.items)/* console.log(response.data.items) */).catch((error) => console.error(error)).finally(() => setInputChange(''));
+    // une requête pour récupérer  le contenu des repos
+    const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setResults(response.data.items)).catch((error) => console.error(error)).finally(() => setInputChange(''));
+    // une requête pour récupérer le nombre de résultats trouvés
+    const NbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setNbResult(response.data.total_count)).catch((error) => console.error(error));
 
-    const NbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setNbResult(response.data.total_count));
+    // essai bonus avec rajout paramètres supplémentaires dans la query
+    const params = {
+      q: formSubmitted,
+      sort: 'stars',
+      order: 'desc',
+      page: 1,
+      per_page: 9,
+    };
+
+    const multipleParamsQuery = axios.get('https://api.github.com/search/repositories?', { params }).then((response) => setResults(response.data.items));
+    // Il faudrait dans App rajouter un bouton à la condition que la longueur des résultats de la requête soit de 9minimum
+    // puis gérer un événement onClick sur le bouton qui rappelle la fonction relançant la requête
+    // Au moment où l'on récupère les résultats de la nouvelle requête, il faudrait que l'on copie (...) l'état de notre state results
+    // Afin d'y incorporer la nouvelle requête et qu'elle vienne s'ajouter à la suite
   };
 
   // render du component
