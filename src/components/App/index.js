@@ -17,12 +17,10 @@ const App = () => {
 
   // pour le onChange de la SearchBar
   const [inputChange, setInputChange] = useState('');
-  // pour la soumission du formulaire
-  const [formQuery, setFormQuery] = useState('');
   // pour la réception des données du formulaire : les repos
   const [results, setResults] = useState([]);
   // pour la réception des données du form : le nombre de résultats
-  const [nbResult, setNbResult] = useState('');
+  const [nbResult, setNbResult] = useState(0);
 
   // gérer la soumission d'envoi du form
   const submitForm = () => {
@@ -30,7 +28,9 @@ const App = () => {
 
     console.log(formSubmitted);
 
-    axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setResults(response.data.items)/* console.log(response.data.items) */).catch((error) => console.error(error))/* .finally(() => setFormQuery('')) */;
+    const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setResults(response.data.items)/* console.log(response.data.items) */).catch((error) => console.error(error)).finally(() => setInputChange(''));
+
+    const NbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setNbResult(response.data.total_count));
   };
 
   // render du component
@@ -42,7 +42,7 @@ const App = () => {
         inputValue={inputChange}
         onFormSubmit={submitForm}
       />
-      {/* <Message /> */}
+      <Message resultNumber={nbResult} />
       <ReposResults results={results} />
     </div>
   );

@@ -12,7 +12,7 @@ const ReposResults = ({ results }) => (
   <article>
     {/** mapper ici sur le tableau de résultats */}
     {results.map((result) => (
-      <section>
+      <section key={result.id}>
         <h2>
           {result.name}
         </h2>
