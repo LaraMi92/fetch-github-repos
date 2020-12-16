@@ -29,8 +29,9 @@ const ReposResults = ({ results }) => (
 ReposResults.propTypes = {
   results: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      full_name: PropTypes.string.isRequired,
+      key: PropTypes.number.isRequired,
+      header: PropTypes.string.isRequired,
+      meta: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
     }),
   ).isRequired,
