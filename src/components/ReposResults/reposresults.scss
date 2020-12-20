@@ -1,4 +1,4 @@
-.results{
+.ui.cards{
   width:100%;
   display: flex;
   flex-flow: row wrap;
@@ -12,6 +12,8 @@
 }
 
 .ui.card{
+  word-wrap: break-word;
   width: 20%;
+  height: 30%;
   margin: 1rem;
 }

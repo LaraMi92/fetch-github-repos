@@ -1,6 +1,8 @@
 // == Import npm
 import React from 'react';
 import PropTypes from 'prop-types';
+// import Semantic UI
+import { Input } from 'semantic-ui-react';
 // == Import
 
 import './searchbar.scss';
@@ -21,7 +23,8 @@ const SearchBar = ({ onFormSubmit, inputValue, onInputChange }) => (
       onFormSubmit();
     }}
   >
-    <input
+    <Input
+      icon="search"
       className="input"
       value={inputValue}
       // événement onChange pour màj l'état avec la saisie utilisateur

@@ -7,6 +7,7 @@ import gitLogo from 'src/assets/images/logo-github.png';
 import SearchBar from 'src/components/SearchBar';
 import Message from 'src/components/Message';
 import ReposResults from 'src/components/ReposResults';
+import MyLoader from 'src/components/Loader';
 
 // API
 import axios from 'axios';
@@ -20,60 +21,76 @@ const App = () => {
   // pour la réception des données du formulaire : les repos
   const [results, setResults] = useState([]);
   // pour la réception des données du form : le nombre de résultats
-  const [nbResult, setNbResult] = useState('');
-
+  const [nbResult, setNbResult] = useState(null);
+  // booléen pour le loader
+  const [isLoading, setIsLoading] = useState(false);
   // pour conserver la requête de l'input envoyé
-  const [sentForm, setSentForm] = useState('');
+  const [sentRequest, setSentRequest] = useState('');
+  // pour màj la requête selon la page
+  const [page, setPage] = useState(1);
 
   // gérer la soumission d'envoi du form
   const submitForm = () => {
+    // loader
+    setIsLoading(true);
+
     const formSubmitted = inputChange;
 
-    console.log(formSubmitted);
-
     // garder en mémoire la requête envoyée pour la fonction loadMoreResults
-    setSentForm(formSubmitted);
+    setSentRequest(formSubmitted);
+
     // une requête pour récupérer  le contenu des repos
-    const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setResults(response.data.items)).catch((error) => console.error(error)).finally(() => setInputChange(''));
+    const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`)
+      .then((response) => setResults(response.data.items))
+      .catch((error) => console.log(error))
+      .finally(() => setInputChange(''));
+
     // une requête pour récupérer le nombre de résultats trouvés
-    const NbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`).then((response) => setNbResult(response.data.total_count)).catch((error) => console.error(error));
+    const nbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`)
+      .then((response) => setNbResult(response.data.total_count))
+      .catch((error) => console.log(error))
+      .finally(() => setIsLoading(false));
   };
 
   const loadMoreresults = () => {
-    // essai bonus avec rajout paramètres supplémentaires dans la query
+    // incrémentation page
+    const newPage = page + 1;
+    // nouvelle requête lancée au onClick
     const params = {
-      q: sentForm,
+      q: sentRequest,
       sort: 'stars',
       order: 'desc',
-      page: 1,
+      page: newPage,
       per_page: 9,
     };
 
-    const multipleParamsQuery = axios.get('https://api.github.com/search/repositories?', { params }).then((response) => setResults([...results, response.data.items]));
-    // Il faudrait dans App rajouter un bouton à la condition que la longueur des résultats de la requête soit de 9minimum
-    // puis gérer un événement onClick sur le bouton qui rappelle la fonction relançant la requête
-    // Au moment où l'on récupère les résultats de la nouvelle requête, il faudrait que l'on copie (...) l'état de notre state results
-    // Afin d'y incorporer la nouvelle requête et qu'elle vienne s'ajouter à la suite
-
-    // pb : je vide mon input à chaque fois requête
-    // à faire: créer un nouveau state qui contiendrait l'input de la requête et la garderait ainsi en mémoire
-    // il faudrait maintenant appeler useEffect pour ne changer l'état du rendu que sur le onClick
+    const multipleParamsQuery = axios.get('https://api.github.com/search/repositories?', { params }).then((response) => {
+      // copie et incrémentation des résultats
+      const newResults = [...results, ...response.data.items];
+      setResults(newResults);
+    })
+      .catch((error) => console.log(error))
+      .finally(() => setPage(newPage));
   };
 
   // render du component
   return (
     <div className="app">
-      <img src={gitLogo} alt="github logo" />
+      <a href="https://github.com">
+        <img src={gitLogo} alt="github logo" />
+      </a>
       <SearchBar
         onInputChange={setInputChange}
         inputValue={inputChange}
         onFormSubmit={submitForm}
       />
       {/** N'afficher le composant que si nbResult contient qqchose */}
-      {nbResult && <Message resultNumber={nbResult} />}
-      <ReposResults results={results} />
-      {/** Penser à rajouter condition pour l'affichage du btn */}
-      <button type="button" onClick={loadMoreresults}>Plus de résultats</button>
+      {nbResult && <Message resultNumber={nbResult} /> }
+      {/** si la requête est en cours, affichage du loader */}
+      {isLoading && <MyLoader />}
+      {/** si le loader est à false et que le tableau de la réponse n'est pas vide, on affiche les résultats */}
+      {!isLoading && results.length !== 0
+      && <ReposResults results={results} loadMoreBtn={loadMoreresults} />}
 
     </div>
   );
