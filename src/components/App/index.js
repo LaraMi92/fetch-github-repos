@@ -1,5 +1,5 @@
 // == Import npm
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // == Imports maison
 import './styles.scss';
@@ -8,6 +8,7 @@ import SearchBar from 'src/components/SearchBar';
 import Message from 'src/components/Message';
 import ReposResults from 'src/components/ReposResults';
 import MyLoader from 'src/components/Loader';
+import ErrorMessage from 'src/components/ErrorMessage';
 
 // API
 import axios from 'axios';
@@ -28,6 +29,8 @@ const App = () => {
   const [sentRequest, setSentRequest] = useState('');
   // pour màj la requête selon la page
   const [page, setPage] = useState(1);
+  // en cas d'erreur
+  const [error, hasError] = useState(false);
 
   // gérer la soumission d'envoi du form
   const submitForm = () => {
@@ -42,13 +45,13 @@ const App = () => {
     // une requête pour récupérer  le contenu des repos
     const repoResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`)
       .then((response) => setResults(response.data.items))
-      .catch((error) => console.log(error))
+      .catch(() => hasError(true))
       .finally(() => setInputChange(''));
 
     // une requête pour récupérer le nombre de résultats trouvés
     const nbResultRequest = axios.get(`https://api.github.com/search/repositories?q=${formSubmitted}`)
       .then((response) => setNbResult(response.data.total_count))
-      .catch((error) => console.log(error))
+      .catch(() => hasError(true))
       .finally(() => setIsLoading(false));
   };
 
@@ -69,7 +72,7 @@ const App = () => {
       const newResults = [...results, ...response.data.items];
       setResults(newResults);
     })
-      .catch((error) => console.log(error))
+      .catch(() => hasError(true))
       .finally(() => setPage(newPage));
   };
 
@@ -85,7 +88,8 @@ const App = () => {
         onFormSubmit={submitForm}
       />
       {/** N'afficher le composant que si nbResult contient qqchose */}
-      {nbResult && <Message resultNumber={nbResult} /> }
+      {nbResult && !error && <Message resultNumber={nbResult} /> }
+      {error && <ErrorMessage text="Nous n'avons pas pu trouver de repos" />}
       {/** si la requête est en cours, affichage du loader */}
       {isLoading && <MyLoader />}
       {/** si le loader est à false et que le tableau de la réponse n'est pas vide, on affiche les résultats */}
